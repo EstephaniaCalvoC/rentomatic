@@ -2,6 +2,8 @@
 
 from rentomatic.repository.memrepo import MemRepo
 from rentomatic.use_cases.room_list import room_list_use_case
+from rentomatic.requests.room_list import build_room_list_request
+
 from rentomatic.serializers.room import RoomJsonEncoder
 import json
 
@@ -36,8 +38,12 @@ rooms = [
     },
 ]
 
+request = build_room_list_request(filters="None")
 repo = MemRepo(rooms)
-result = room_list_use_case(repo)
+response = room_list_use_case(repo, request)
 
-# print([json.dumps(room, cls=RoomJsonEncoder) for room in result])
-print([room.to_dict() for room in result])
+if response:
+    # print([json.dumps(room, cls=RoomJsonEncoder) for room in response.value])
+    print([room.to_dict() for room in response.value])
+else:
+    print(response.message)
