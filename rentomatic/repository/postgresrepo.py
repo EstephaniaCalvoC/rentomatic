@@ -7,14 +7,16 @@ from rentomatic.repository.postgres_objects import Base, Room
 
 class PostgresRepo:
     def __init__(self, connection_data):
-        connection_string = "postgresql+psycopg2://{}:{}@{}/{}".format(
-            connection_data["user"],
-            connection_data["password"],
-            connection_data["host"],
-            connection_data["dbname"],
+        conn_str = "postgresql+psycopg2://{}:{}@{}:{}/{}".format(
+            connection_data["POSTGRES_USER"],
+            connection_data["POSTGRES_PASSWORD"],
+            connection_data["POSTGRES_HOSTNAME"],
+            connection_data["POSTGRES_PORT"],
+            connection_data["APPLICATION_DB"],
         )
+        self.engine = create_engine(conn_str)
+        # connection = engine.connect()
 
-        self.engine = create_engine(connection_string)
         Base.metadata.create_all(self.engine)
         Base.metadata.bind = self.engine
 
